@@ -1,0 +1,16 @@
+{
+  "trigger": "EDR Alert Webhook",
+  "steps": [
+    {
+      "action": "Validate An Alert",
+      "condition": "severity == high"
+    },
+    {
+      "action": "Isolate Endpoint",
+      "api_call": "POST /v1/isolate"
+    },
+    {
+      "action": "Send Slack Notification"
+    }
+  ]
+}
