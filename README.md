@@ -1,107 +1,96 @@
-## SOAR-EDR Automated Incident Response Lab
+SOC Automation — Wazuh, Shuffle & TheHive Incident Response Lab
 
-##  Project Overview
+Project Overview
 
-This project demonstrates the integration of an Endpoint Detection and Response (EDR) platform with a Security Orchestration, Automation, and Response (SOAR) system to build an automated incident response pipeline.
+This project demonstrates a fully automated Security Operations Center (SOC) pipeline integrating a SIEM, SOAR, and case management platform to detect, enrich, and respond to threats without manual intervention.
 
-The objective is to automatically detect suspicious activity on endpoints and trigger automated containment actions without manual intervention.
+The objective is to automatically detect malicious activity on Windows endpoints, orchestrate a response workflow, and notify the SOC analyst all within seconds of detection.
 
----
-
-##  Architecture
+Architecture
 
 The lab integrates:
+- Wazuh (SIEM / EDR)
+- Shuffle (SOAR)
+- TheHive (Case Management)
+- VirusTotal (IOC Enrichment)
+- Email (Analyst Notification)
 
-- LimaCharlie (EDR)
-- Tines (SOAR)
-- Slack (Notification System)
+ Workflow:
+1. Windows 10 endpoint monitored by Wazuh Agent + Sysmon.
+2. Suspicious activity detected (e.g., Mimikatz execution).
+3. Alert forwarded to Shuffle via webhook.
+4. SOAR enriches IOCs using VirusTotal API.
+5. Case automatically created in TheHive.
+6. SOC analyst notified via email with full alert context.
+7. Analyst approves response action via email reply.
+8. Wazuh performs active response on the endpoint.
 
-### Workflow:
 
-1. Endpoint monitored by EDR agent.
-2. Suspicious process behavior detected.
-3. Alert sent to SOAR via webhook.
-4. SOAR enriches alert context.
-5. Automated endpoint isolation triggered.
-6. Notification sent to SOC team.
+Technologies Used
 
----
+- Wazuh (SIEM / EDR / Active Response)
+- Sysmon (Windows Endpoint Telemetry)
+- Shuffle (SOAR Automation)
+- TheHive (Case Management)
+- VirusTotal API (IOC Enrichment)
+- Email / SMTP (Analyst Notification)
+- Detection Engineering Rules (XML)
+- MITRE ATT&CK Framework
 
-##  Technologies Used
 
-- LimaCharlie (EDR)
-- Tines (SOAR Automation)
-- Slack Webhooks
-- REST APIs
-- JSON Playbooks
-- Detection Engineering Rules
+Detection Logic
 
----
-
-##  Detection Logic
-
-The detection rule monitors:
-
-- Suspicious PowerShell execution
-- Encoded commands
+Custom Wazuh rules monitor:
+- Credential dumping tools (Mimikatz)
+- SSH authentication failures
+- Suspicious process execution via Sysmon event logs
 - Unusual parent-child process relationships
 
-Example:
-- powershell.exe with encoded commands
-- Suspicious command-line arguments
+Example detections:
+- mimikatz.exe executed on endpoint → Rule 100002 triggered (Level 15)
+- Repeated SSH failures from same IP → Rule 100001 triggered (Level 5)
 
----
 
-##  SOAR Playbook Logic
+SOAR Playbook Logic
 
-The automated workflow performs:
+The automated Shuffle workflow performs:
+- Webhook trigger on Wazuh alert
+- IOC hash lookup via VirusTotal API
+- Conditional logic (if severity ≥ 10)
+- Automatic case creation in TheHive
+- Enriched email notification to SOC analyst
+- Active response command sent back to Wazuh
 
-- Alert validation
-- Context enrichment
-- Conditional logic (if severity high)
-- Endpoint isolation via API
-- Notification to Slack
 
----
+MITRE ATT&CK Mapping
 
-##  MITRE ATT&CK Mapping
+T1003 – OS Credential Dumping (Mimikatz)
+T1110 – Brute Force (SSH Authentication Failures)
+T1059 – Command and Scripting Interpreter
+T1071 – Application Layer Protocol
 
-- T1059 – Command and Scripting Interpreter
-- T1562 – Impair Defenses
-- T1071 – Application Layer Protocol
 
----
-
-## Key Skills Demonstrated
+Key Skills Demonstrated
 
 - Incident Response Automation
-- Detection Engineering
-- API Integration
-- SOC Workflow Design
-- Endpoint Containment
-- Threat Enrichment
+- Detection Engineering (Custom Wazuh Rules)
+- SOAR Workflow Design
+- API Integration (VirusTotal, TheHive, Wazuh)
+- Endpoint Active Response
+- IOC Enrichment
+- MITRE ATT&CK Mapping
 - Security Architecture Design
 
----
 
-##  Results
+Results
 
-- Reduced response time from manual (~15 minutes) to automated (<30 seconds)
-- Automated containment of compromised endpoint
-- Improved SOC efficiency
+- Reduced response time from manual (15 minutes) to automated (<30 seconds)
+- Automated case creation and analyst notification on every alert
+- Endpoint containment triggered without manual intervention
+- Full audit trail maintained in TheHive for every incident
 
----
 
-##  Future Improvements
+ Author
 
-- VirusTotal enrichment integration
-- Automated ticket creation (JIRA)
-- Threat intelligence correlation
-- Multi-endpoint orchestration
-
----
-
-## Author
-
-[Abdullah Mustafa]
-Cybersecurity | SOC | DFIR
+Abdullah Mustafa
+Cybersecurity | SOC 
